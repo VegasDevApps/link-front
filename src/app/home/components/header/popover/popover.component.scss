@@ -1,8 +1,8 @@
-.item-devider {
-    border-bottom: 1px solid var(--ion-color-light-tint);
-}
+// .item-devider {
+//     border-bottom: 1px solid var(--ion-color-light-tint);
+// }
 
-ion-card-content {
+ion-card-content p:hover{
     text-decoration: underline;
     cursor: pointer;
 }
