@@ -1,7 +1,7 @@
 <div class="all-post-container">
   <ion-content>
     <ion-list>
-      <ion-card>
+      <ion-card *ngFor="let post of allLoadedPosts">
         <ion-grid>
           <ion-row class="ion-justify-content-center ion-align-items-center">
             <ion-col class="ion-padding" size="auto">
@@ -23,7 +23,7 @@
               </div>
             </ion-col>
           </ion-row>
-          <p class="post-body">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Esse, officia!</p>
+          <p class="post-body">{{ post.body }}</p>
           <ion-button color="medium" fill="clear">
             <ion-icon name="thumbs-up-outline"></ion-icon>
             <ion-text>Like</ion-text>
@@ -43,5 +43,13 @@
         </ion-grid>
       </ion-card>
     </ion-list>
+    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+      <ion-infinite-scroll-content 
+      loadingSpinner="bubbles"
+      loadingText="Loading more data...">
+
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
   </ion-content>
+  <div class="hide-scrollbar"></div>
 </div>

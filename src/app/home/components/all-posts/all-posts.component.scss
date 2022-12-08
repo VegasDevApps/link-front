@@ -25,7 +25,7 @@
                 font-size: 12px;
                 width: 80px;
             }
-            ion-icon[name="ellipses"] {
+            ion-icon[name="ellipse"] {
                 font-size: 4px;
             }
             .post-body {
@@ -37,5 +37,11 @@
             width: 48px;
             height: 48px;
         }
+    }
+    .hide-scrollbar{
+        height: calc(100vh - 320px);
+        margin-left: -16px;
+        border-right: 16px solid #f3f2ef;
+        z-index: 2;
     }
 }
