@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { NewUser } from './model/new-user.mode';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-auth',
@@ -13,7 +15,7 @@ export class AuthPage implements OnInit {
   //submissionType: 'login' | 'join' = 'login';
   isLogin: boolean = true;
 
-  constructor() { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit() {
   }
@@ -23,11 +25,18 @@ export class AuthPage implements OnInit {
     if (!email || !password) return;
 
     if (this.isLogin) {
+      // Video #10 1:03:00
       console.log(1, 'Handle login', email, password);
     } else {
       const { firstName, lastName } = this.form.value;
-      if (!firstName || !lastName) return;
-      console.log(2, 'Handle Join', firstName, lastName, email, password);
+
+      const newUser: NewUser = {firstName, lastName, email, password};
+      
+      return this.authService.register(newUser).subscribe(() => {
+        this.toggleText();
+      });
+      
+      //console.log(2, 'Handle Join', firstName, lastName, email, password);
     }
    
   }
