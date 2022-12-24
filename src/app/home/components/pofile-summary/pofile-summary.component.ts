@@ -1,4 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { take } from 'rxjs/operators';
+import { Role } from 'src/app/auth/model/user.model';
+import { AuthService } from 'src/app/auth/services/auth.service';
+
+type BannerColor = {
+  colorOne: string;
+  colorTwo: string;
+  colorThree: string;
+}
 
 @Component({
   selector: 'app-profile-summary',
@@ -7,8 +16,38 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProfileSummaryComponent implements OnInit {
 
-  constructor() { }
+  constructor(private authService: AuthService) { }
 
-  ngOnInit() {}
+  bannerColor: BannerColor = {
+    colorOne: '#a0b4b7',
+    colorTwo: '#dbe7e9',
+    colorThree: '#bfd3d6'
+  }
 
+  ngOnInit() {
+    this.authService.userRole.pipe(take(1)).subscribe((role: Role) => {
+      this.bannerColor = this.getBannerColor(role);
+    })
+  }
+
+  private getBannerColor(role: Role): BannerColor {
+    switch(role){
+      case 'admin':
+        return {
+          colorOne: '#daa520',
+          colorTwo: '#f0e68c',
+          colorThree: '#bfafad2'
+        }
+
+      case 'premium':
+        return {
+          colorOne: '#bc8f8f',
+          colorTwo: '#c09999',
+          colorThree: '#ddadaf'
+        }
+
+      default:
+        return this.bannerColor;
+    }
+  }
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NewUser } from './model/new-user.mode';
 import { AuthService } from './services/auth.service';
 
@@ -15,7 +16,7 @@ export class AuthPage implements OnInit {
   //submissionType: 'login' | 'join' = 'login';
   isLogin: boolean = true;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit() {
   }
@@ -25,8 +26,9 @@ export class AuthPage implements OnInit {
     if (!email || !password) return;
 
     if (this.isLogin) {
-      // Video #10 1:03:00
-      console.log(1, 'Handle login', email, password);
+      return this.authService.login(email, password).subscribe(() => {
+        this.router.navigateByUrl('/home');
+      });
     } else {
       const { firstName, lastName } = this.form.value;
 

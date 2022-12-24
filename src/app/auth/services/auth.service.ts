@@ -2,8 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Preferences } from '@capacitor/preferences';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { switchMap, take, tap } from 'rxjs/operators';
+import { BehaviorSubject, from, Observable, of } from 'rxjs';
+import { map, switchMap, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import jwt_decode from 'jwt-decode';
 
@@ -73,6 +73,30 @@ export class AuthService {
 
         })
       );
+  }
+
+  isTokenInStorage(): Observable<boolean> {
+    return from(Preferences.get({key: 'token'})).pipe(
+      map((data: { value: string}) => {
+        if(!data || !data.value) return null;
+
+        const decodedToken: UserResponse = jwt_decode(data.value);
+        const jwtExpirationInMs = decodedToken.exp * 1000;
+        const isExpired = new Date() > new Date(jwtExpirationInMs);
+
+        if(isExpired) return null;
+        if(decodedToken.user){
+          this.user$.next(decodedToken.user);
+          return true;
+        }
+      })
+    )
+  }
+
+  logout(): void {
+    this.user$.next(null);
+    Preferences.remove({ key: 'token'});
+    this.router.navigateByUrl('/auth');
   }
 }
 
