@@ -22,6 +22,7 @@ export class StartPostComponent implements OnInit {
     await modal.present();
 
     const { data, role } = await modal.onDidDismiss();
+    // Video #12 37:00
     console.log('role: ', role, 'data: ', data);
   }
 }
