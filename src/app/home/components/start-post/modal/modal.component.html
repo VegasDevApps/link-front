@@ -1,6 +1,6 @@
 <div>
   <div class="heading ion-padding">
-    <ion-text>Create a post</ion-text>
+    <ion-text>{{ id ? 'Edit' : 'Create'}} a post</ion-text>
     <ion-button (click)="onDismiss()" size="small" color="dark" fill="clear" shape="round">
       <ion-icon slot="icon-only" size="large" name="close-outline"></ion-icon>
     </ion-button>
@@ -53,7 +53,7 @@
             <ion-text class="view-status">Anyone</ion-text>
           </ion-button>
         </div>
-          <ion-button class="ion-margin" [disabled]="!form.valid" type="submit">Post</ion-button>
+          <ion-button class="ion-margin" [disabled]="!form.valid" type="submit">{{ id ? 'Edit' : 'Post'}}</ion-button>
       </div>
   </form>
 </div>
