@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { take } from 'rxjs/operators';
 import { Role } from 'src/app/auth/model/user.model';
 import { AuthService } from 'src/app/auth/services/auth.service';
+
+type validFileExtension = 'png' | 'jpg' | 'jpeg';
+type validMimeType = 'image/png' | 'image/jpg' | 'image/jpeg';
 
 type BannerColor = {
   colorOne: string;
@@ -16,6 +20,11 @@ type BannerColor = {
 })
 export class ProfileSummaryComponent implements OnInit {
 
+  form: FormGroup;
+
+  validFileExtensions: validFileExtension[] = ['png' , 'jpg' , 'jpeg'];
+  validMimeTypes: validMimeType[] = [ 'image/png' , 'image/jpg' , 'image/jpeg'];
+
   constructor(private authService: AuthService) { }
 
   bannerColor: BannerColor = {
@@ -25,6 +34,9 @@ export class ProfileSummaryComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.form = new FormGroup({
+      file: new FormControl(null)
+    });
     this.authService.userRole.pipe(take(1)).subscribe((role: Role) => {
       this.bannerColor = this.getBannerColor(role);
     })
@@ -49,5 +61,16 @@ export class ProfileSummaryComponent implements OnInit {
       default:
         return this.bannerColor;
     }
+  }
+
+  onFileSelect(event: Event): void {
+    console.log(event);
+    const file: File = (event.target as HTMLInputElement).files[0];
+    if(!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    // Video #14 43:47
   }
 }
