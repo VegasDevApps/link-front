@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { take } from 'rxjs/operators';
+import { FileTypeResult } from 'file-type';
+import { fromBuffer } from 'file-type/core';
+import { BehaviorSubject, from, of, Subscription } from 'rxjs';
+import { switchMap, take } from 'rxjs/operators';
 import { Role } from 'src/app/auth/model/user.model';
 import { AuthService } from 'src/app/auth/services/auth.service';
 
@@ -18,12 +21,19 @@ type BannerColor = {
   templateUrl: './pofile-summary.component.html',
   styleUrls: ['./pofile-summary.component.scss'],
 })
-export class ProfileSummaryComponent implements OnInit {
+export class ProfileSummaryComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
 
   validFileExtensions: validFileExtension[] = ['png' , 'jpg' , 'jpeg'];
-  validMimeTypes: validMimeType[] = [ 'image/png' , 'image/jpg' , 'image/jpeg'];
+  validMimeTypes: validMimeType[] = ['image/png', 'image/jpg', 'image/jpeg'];
+  
+  userFullImagePath: string;
+  private userImagePathSubscriptions: Subscription;
+
+
+  fullName$ = new BehaviorSubject<string>(null);
+  fullName = '';
 
   constructor(private authService: AuthService) { }
 
@@ -39,7 +49,24 @@ export class ProfileSummaryComponent implements OnInit {
     });
     this.authService.userRole.pipe(take(1)).subscribe((role: Role) => {
       this.bannerColor = this.getBannerColor(role);
-    })
+    });
+
+    this.authService.userFullName.pipe(
+      take(1)
+    ).subscribe((fullName: string) => {
+      this.fullName = fullName;
+      this.fullName$.next(fullName);
+    });
+
+    this.userImagePathSubscriptions = this.authService.userFullImagePath.subscribe((fullIamgePath: string) => {
+      this.userFullImagePath = fullIamgePath;
+    });
+
+
+  }
+
+  ngOnDestroy(): void {
+    this.userImagePathSubscriptions.unsubscribe();
   }
 
   private getBannerColor(role: Role): BannerColor {
@@ -64,13 +91,34 @@ export class ProfileSummaryComponent implements OnInit {
   }
 
   onFileSelect(event: Event): void {
-    console.log(event);
     const file: File = (event.target as HTMLInputElement).files[0];
-    if(!file) return;
+    
+    if (!file) return;
 
     const formData = new FormData();
     formData.append('file', file);
 
-    // Video #14 43:47
+    from(file.arrayBuffer()).pipe(
+      switchMap((buffer: Buffer) => {
+        return from(fromBuffer(buffer)).pipe(
+          switchMap((fileTypeResult: FileTypeResult) => {
+            if (!fileTypeResult) {
+              console.log({ error: 'file format not supported!' });
+              return of();
+            }
+            const { ext, mime } = fileTypeResult;
+            const isFileTypeIsLegit = this.validFileExtensions.includes(ext as any);
+            const isMimeTypeIsLegit = this.validMimeTypes.includes(mime as any);
+            const isFileLegit = isFileTypeIsLegit && isMimeTypeIsLegit;
+            if (!isFileLegit) {
+              console.log({ error: 'file format does not match file contend!' });
+              return of();
+            }
+            return this.authService.uploadUserImage(formData);
+          })
+        );
+      })
+    ).subscribe();
+    this.form.reset();
   }
 }

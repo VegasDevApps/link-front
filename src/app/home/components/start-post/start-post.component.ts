@@ -1,5 +1,7 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/auth/services/auth.service';
 import { ModalComponent } from './modal/modal.component';
 
 @Component({
@@ -7,13 +9,24 @@ import { ModalComponent } from './modal/modal.component';
   templateUrl: './start-post.component.html',
   styleUrls: ['./start-post.component.scss'],
 })
-export class StartPostComponent implements OnInit {
+export class StartPostComponent implements OnInit, OnDestroy {
 
   @Output() create: EventEmitter<any> = new EventEmitter();
 
-  constructor(public modalController: ModalController) { }
+  constructor(public modalController: ModalController, private authService: AuthService) { }
 
-  ngOnInit() {}
+  userFullImagePath: string;
+  private userImagePathSubscription: Subscription;
+
+  ngOnInit() { 
+    this.userImagePathSubscription = this.authService.userFullImagePath.subscribe((fullIamgePath: string) => {
+      this.userFullImagePath = fullIamgePath;
+    });
+  }
+  
+  ngOnDestroy(): void {
+    this.userImagePathSubscription.unsubscribe()
+  }
 
   async presentModal() {
     const modal = await this.modalController.create({

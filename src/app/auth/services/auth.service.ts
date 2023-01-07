@@ -95,7 +95,7 @@ export class AuthService {
     return this.http.get<{ imageName: string }>(`${environment.baseApiUrl}/user/image-name`).pipe(take(1));
   }
 
-  updateImagePath(imagePath: string): Observable<User> {
+  updateUserImagePath(imagePath: string): Observable<User> {
     return this.user$.pipe(
       take(1),
       map((user: User) => {

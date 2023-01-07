@@ -6,12 +6,12 @@
           <ion-row class="ion-justify-content-center ion-align-items-center">
             <ion-col class="ion-padding" size="auto">
               <ion-avatar>
-                <ion-img src="../../../../assets/profile-pic.jpg"></ion-img>
+                <ion-img *ngIf="post.author.imagePath" [src]="post.author.imagePath"></ion-img>
               </ion-avatar>
             </ion-col>
             <ion-col>
               <div class="full-name">
-                Vegas Rico
+                {{ fullName }}
               </div>
               <div class="role">
                 Full Stack Developer
