@@ -33,6 +33,7 @@ export class ConnectionProfileComponent implements OnInit, OnDestroy {
     this.friendRequestStatusSubscribtion$ = this.getFriendRequestStatus().pipe(
       tap((friendRequestStatus: FriendRequestStatus) => {
         this.friendRequestStatus = friendRequestStatus.status;
+        console.log(12, this.friendRequestStatus)
         this.userSubscribtion$ = this.getUser().subscribe((user: User) => {
           this.user = user;
           const imgPath = user.imagePath ?? 'blank-profile-picture.png';

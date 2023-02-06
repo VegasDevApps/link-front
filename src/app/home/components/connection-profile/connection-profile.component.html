@@ -1,5 +1,3 @@
-<app-header></app-header>
-
 <ion-content>
   <ion-card>
     <div [style.background]="this.bannerColorService.bannerColor.colorTwo" class="backdrop">
@@ -29,11 +27,11 @@
           (click)="addUser()">
           {{ friendRequestStatus === 'waiting-for-current-user-response' ? 'Accept Request' : 'Connect' }}
         </ion-button>
+      </ng-container>
         <ion-button fill="outline">
           <ion-icon slot="start" name="lock-closed"></ion-icon>Message
         </ion-button>
         <ion-button shape="round" fill="outline">More</ion-button>
-      </ng-container>
     </ion-card-content>
   </ion-card>
 </ion-content>

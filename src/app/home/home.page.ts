@@ -7,10 +7,5 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
 
-  body = '';
-  constructor() {}
 
-  onCreatePost(body: string) {
-    this.body = body;
-  }
 }
