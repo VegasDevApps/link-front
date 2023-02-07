@@ -1,4 +1,4 @@
-<div class="all-post-container">
+<div class="all-post-container" *ngIf="allLoadedPosts.length > 0">
   <ion-content>
     <ion-list>
       <ion-card *ngFor="let post of allLoadedPosts">

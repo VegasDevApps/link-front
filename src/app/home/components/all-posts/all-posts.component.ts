@@ -104,8 +104,6 @@ export class AllPostsComponent implements OnInit, OnChanges, OnDestroy {
 
       if(event) event.target.complete();
       this.skipPost += 5;
-    }, (error) => {
-      console.error(error);
     });
   }
 
